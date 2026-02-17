@@ -7,16 +7,18 @@ import (
 )
 
 type App struct {
-	RestaurantManager managers.RestaurantManager
-	OrderManager      managers.OrderManager
-	UserManager       managers.UserManager
+	RestaurantManager   managers.RestaurantManager
+	OrderManager        managers.OrderManager
+	UserManager         managers.UserManager
+	NotificationService managers.NotificationService
 }
 
 func NewApp() *App {
 	return &App{
-		RestaurantManager: *factories.NewRestaurantFactory(),
-		OrderManager:      factories.NewOrderFactory("now"),
-		UserManager:       factories.NewUserFactory(),
+		RestaurantManager:   factories.NewRestaurantFactory(),
+		OrderManager:        factories.NewOrderFactory("now"),
+		UserManager:         factories.NewUserFactory(),
+		NotificationService: factories.NotificationServiceFactory("sms"),
 	}
 }
 
@@ -37,4 +39,8 @@ func (a *App) InitializeRestaurants() {
 		Menus: []models.Menu{{Name: "Chicken", Type: "Burger", Price: 5.99}},
 	})
 
+}
+
+func (a *App) ChangeNotificationService(service string) {
+	a.NotificationService = factories.NotificationServiceFactory(service)
 }

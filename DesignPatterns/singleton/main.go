@@ -8,7 +8,8 @@ import (
 
 var once sync.Once
 var dbInstance *singleDbInstance
-var mu sync.Mutex
+
+// var mu sync.Mutex
 
 type singleDbInstance struct {
 	Db *sql.DB

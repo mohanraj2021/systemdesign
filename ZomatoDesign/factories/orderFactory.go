@@ -1,8 +1,6 @@
 package factories
 
 import (
-	"math/rand/v2"
-
 	"github.com/zomatodesign/managers"
 	"github.com/zomatodesign/models"
 )
@@ -26,9 +24,6 @@ type ScheduledOrderFactory struct {
 
 func (of *NowOrderFactory) PlaceOrder(order *models.Order, cart *models.Cart, Restaurant *models.Restaurant) models.Order {
 	order.Status = "Placed"
-	order.Id = rand.Int()
-	order.User = of.User
-	order.Restaurant = *Restaurant
 	order.Items = cart.Items
 	order.TotalAmount = cart.GetTotal()
 	of.Orders[order.Id] = *order
@@ -54,9 +49,6 @@ func (of *NowOrderFactory) GetOrderStatus(orderID int) string {
 
 func (sof *ScheduledOrderFactory) PlaceOrder(order *models.Order, cart *models.Cart, Restaurant *models.Restaurant) models.Order {
 	order.Status = "Scheduled"
-	order.Id = rand.Int()
-	order.User = sof.User
-	order.Restaurant = *Restaurant
 	order.Items = cart.Items
 	order.TotalAmount = cart.GetTotal()
 	sof.Orders[order.Id] = *order

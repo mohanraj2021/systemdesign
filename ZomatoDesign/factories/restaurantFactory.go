@@ -38,12 +38,12 @@ func (rf *RestaurantFactory) SearchRestaurant(name string) []models.Restaurant {
 	return results
 }
 
-func NewRestaurantFactory() *managers.RestaurantManager {
+func NewRestaurantFactory() managers.RestaurantManager {
 	var restaurantFactory managers.RestaurantManager
 	once.Do(func() {
 		restaurantFactory = &RestaurantFactory{
 			restaurantMap: make(map[string]models.Restaurant),
 		}
 	})
-	return &restaurantFactory
+	return restaurantFactory
 }

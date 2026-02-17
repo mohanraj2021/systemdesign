@@ -12,12 +12,20 @@ func (t *textElement) render() string {
 	return t.text
 }
 
+func NewTextElement(text string) DocumentElement {
+	return &textElement{text: text}
+}
+
 type imageElement struct {
 	url string
 }
 
 func (i *imageElement) render() string {
 	return "<img src='" + i.url + "' />"
+}
+
+func NewImageElement(url string) DocumentElement {
+	return &imageElement{url: url}
 }
 
 type Document struct {
@@ -28,12 +36,8 @@ type DocumentEditor struct {
 	Doc Document
 }
 
-func (d *DocumentEditor) AddText(text string) {
-	d.Doc.elements = append(d.Doc.elements, &textElement{text: text})
-}
-
-func (d *DocumentEditor) AddImage(url string) {
-	d.Doc.elements = append(d.Doc.elements, &imageElement{url: url})
+func (d *DocumentEditor) AddElement(element DocumentElement) {
+	d.Doc.elements = append(d.Doc.elements, element)
 }
 
 func (d *DocumentEditor) RenderDocument() string {
@@ -45,9 +49,9 @@ func (d *DocumentEditor) RenderDocument() string {
 }
 
 func main() {
-	editor := DocumentEditor{}
-	editor.AddText("Hello")
-	editor.AddImage("http://example.com/image.jpg")
-	editor.AddText("World")
+	editor := &DocumentEditor{}
+	editor.AddElement(NewTextElement("Hello"))
+	editor.AddElement(NewImageElement("http://example.com/image.jpg"))
+	editor.AddElement(NewTextElement("World"))
 	println(editor.RenderDocument())
 }
