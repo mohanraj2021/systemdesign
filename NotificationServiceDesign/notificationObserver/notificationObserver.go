@@ -13,8 +13,26 @@ type NotificationObservable interface {
 	Notify(notification decorator.INotification)
 }
 
+type NotificationDispatcher interface {
+	Dispatch(message string) error
+}
+
 type NotificationObeserver interface {
 	Update(notification decorator.INotification)
+}
+
+type Dispatcher struct {
+	strategies notificationstrategy.NotificationStrategyList
+}
+
+func NewNotificationDispatcher(strategies ...notificationstrategy.NotificationStrategy) *Dispatcher {
+	return &Dispatcher{
+		strategies: notificationstrategy.NewNotificationstrategyList(strategies...),
+	}
+}
+
+func (d *Dispatcher) Dispatch(message string) error {
+	return d.strategies.SendNotification(message)
 }
 
 type NotificationObeservableList struct {
@@ -22,15 +40,16 @@ type NotificationObeservableList struct {
 }
 
 type LoggerObserver struct {
-	NotificatioStrat notificationstrategy.NotificationStrategyList
+	dispatcher NotificationDispatcher
+}
+
+func NewLoggerObserver(dispatcher NotificationDispatcher) *LoggerObserver {
+	return &LoggerObserver{dispatcher: dispatcher}
 }
 
 func (l *LoggerObserver) Update(notification decorator.INotification) {
-	// log the notification
 	msg := fmt.Sprintf("Received notification: %v\n", notification.GetContent())
-	// for _, strategy := range l.NotificatioStrat {
-	l.NotificatioStrat.SendNotification(msg)
-	// }
+	l.dispatcher.Dispatch(msg)
 }
 
 func (n *NotificationObeservableList) RemoveObserver(observer NotificationObeserver) {

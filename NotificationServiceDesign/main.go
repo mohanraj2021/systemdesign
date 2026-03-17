@@ -10,18 +10,15 @@ func main() {
 	emai := notificationstrategy.EmailNotification{}
 	sms := notificationstrategy.SMSNotification{}
 	push := notificationstrategy.PushNotification{}
-	list := notificationstrategy.NewNotificationstrategyList(&emai, &sms, &push)
-	loggerObeserver := notificationobserver.LoggerObserver{
-		NotificatioStrat: list,
-	}
+	alldispatcher := notificationobserver.NewNotificationDispatcher(&emai, &sms, &push)
+	loggerObeserver := notificationobserver.NewLoggerObserver(alldispatcher)
 
-	simpleObserver := notificationobserver.LoggerObserver{
-		NotificatioStrat: notificationstrategy.NewNotificationstrategyList(&emai),
-	}
+	simpleDispatcher := notificationobserver.NewNotificationDispatcher(&emai)
+	simpleObserver := notificationobserver.NewLoggerObserver(simpleDispatcher)
 
 	notificationObservableList := notificationobserver.NotificationObeservableList{}
-	notificationObservableList.AddObserver(&loggerObeserver)
-	notificationObservableList.AddObserver(&simpleObserver)
+	notificationObservableList.AddObserver(loggerObeserver)
+	notificationObservableList.AddObserver(simpleObserver)
 
 	notificationDecorator := decorator.NotificationDecorator{
 		Message: "Hello, this is a simple notification",
