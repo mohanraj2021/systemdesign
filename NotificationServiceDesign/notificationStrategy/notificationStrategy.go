@@ -3,47 +3,51 @@ package notificationstrategy
 import "fmt"
 
 type NotificationStrategy interface {
-	SendNotification(notification any) error
-}
-
-type EmailNotificationStrategy interface {
-	SendNotification(notification any) error
+	SendNotification(notification string) error
 }
 
 type EmailNotification struct {
 	EmailAddress string
 }
 
-func (e *EmailNotification) SendNotification(notification any) error {
+func (e *EmailNotification) SendNotification(notification string) error {
 	// send the notification to the email
 	fmt.Printf("mail sent : %v\n", notification)
 	return nil
-}
-
-type SMSNotificationStrategy interface {
-	SendNotification(notification any) error
 }
 
 type SMSNotification struct {
 	PhoneNumber string
 }
 
-func (s *SMSNotification) SendNotification(notification any) error {
+func (s *SMSNotification) SendNotification(notification string) error {
 	// send the notification to the phone number
 	fmt.Printf("sms sent : %v\n", notification)
 	return nil
-}
-
-type PushNotificationStrategy interface {
-	SendNotification(notification any) error
 }
 
 type PushNotification struct {
 	DeviceToken string
 }
 
-func (p *PushNotification) SendNotification(notification any) error {
+func (p *PushNotification) SendNotification(notification string) error {
 	// send the notification to the device
 	fmt.Printf("push notification sent : %v\n", notification)
 	return nil
+}
+
+type NotificationStrategyList []NotificationStrategy
+
+func (n NotificationStrategyList) SendNotification(notification string) error {
+	for _, strategy := range n {
+		err := strategy.SendNotification(notification)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func NewNotificationstrategyList(strategies ...NotificationStrategy) NotificationStrategyList {
+	return NotificationStrategyList(strategies)
 }

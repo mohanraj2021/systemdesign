@@ -10,26 +10,25 @@ type INotification interface {
 }
 
 type NotificationDecorator struct {
-	notification INotification
-}
-
-func (d *NotificationDecorator) GetContent() any {
-	return d.notification.GetContent()
-}
-
-type SimpleNotification struct {
 	Message string
 }
 
+func (d *NotificationDecorator) GetContent() any {
+	return d.Message
+}
+
+type SimpleNotification struct {
+	Notification INotification
+}
+
 func (s *SimpleNotification) GetContent() any {
-	return s.Message
+	return fmt.Sprintf("%v", s.Notification.GetContent())
 }
 
 type UrgentNotificationWithTimestamp struct {
-	Message   string
-	Timestamp time.Time
+	Notification INotification
 }
 
 func (u *UrgentNotificationWithTimestamp) GetContent() any {
-	return fmt.Sprintf("%v %v", u.Message, u.Timestamp)
+	return fmt.Sprintf("%v %v", u.Notification.GetContent(), time.Now().Format("02-01-2006 15:04:05"))
 }

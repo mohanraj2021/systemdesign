@@ -1,8 +1,6 @@
 package main
 
 import (
-	"time"
-
 	decorator "plugplay.com/notification/notificationDecorator"
 	notificationobserver "plugplay.com/notification/notificationObserver"
 	notificationstrategy "plugplay.com/notification/notificationStrategy"
@@ -12,27 +10,30 @@ func main() {
 	emai := notificationstrategy.EmailNotification{}
 	sms := notificationstrategy.SMSNotification{}
 	push := notificationstrategy.PushNotification{}
-
+	list := notificationstrategy.NewNotificationstrategyList(&emai, &sms, &push)
 	loggerObeserver := notificationobserver.LoggerObserver{
-		NotificatioStrat: []notificationstrategy.NotificationStrategy{&emai, &sms, &push},
+		NotificatioStrat: list,
 	}
 
 	simpleObserver := notificationobserver.LoggerObserver{
-		NotificatioStrat: []notificationstrategy.NotificationStrategy{&emai},
+		NotificatioStrat: notificationstrategy.NewNotificationstrategyList(&emai),
 	}
 
 	notificationObservableList := notificationobserver.NotificationObeservableList{}
 	notificationObservableList.AddObserver(&loggerObeserver)
 	notificationObservableList.AddObserver(&simpleObserver)
 
-	simpleNotification := decorator.SimpleNotification{
+	notificationDecorator := decorator.NotificationDecorator{
 		Message: "Hello, this is a simple notification",
 	}
 
-	urgentNotification := decorator.UrgentNotificationWithTimestamp{
-		Message:   "Hello, this is a urgent notification",
-		Timestamp: time.Now(),
+	simpleDecorator := decorator.SimpleNotification{
+		Notification: &notificationDecorator,
 	}
-	notificationObservableList.Notify(&simpleNotification)
+
+	urgentNotification := decorator.UrgentNotificationWithTimestamp{
+		Notification: &simpleDecorator,
+	}
+	notificationObservableList.Notify(&notificationDecorator)
 	notificationObservableList.Notify(&urgentNotification)
 }

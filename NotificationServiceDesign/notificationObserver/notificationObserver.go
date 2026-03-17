@@ -22,15 +22,15 @@ type NotificationObeservableList struct {
 }
 
 type LoggerObserver struct {
-	NotificatioStrat []notificationstrategy.NotificationStrategy
+	NotificatioStrat notificationstrategy.NotificationStrategyList
 }
 
 func (l *LoggerObserver) Update(notification decorator.INotification) {
 	// log the notification
 	msg := fmt.Sprintf("Received notification: %v\n", notification.GetContent())
-	for _, strategy := range l.NotificatioStrat {
-		strategy.SendNotification(msg)
-	}
+	// for _, strategy := range l.NotificatioStrat {
+	l.NotificatioStrat.SendNotification(msg)
+	// }
 }
 
 func (n *NotificationObeservableList) RemoveObserver(observer NotificationObeserver) {
