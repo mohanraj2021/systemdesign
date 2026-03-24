@@ -1,34 +1,38 @@
 package decorator
 
 import (
-	"fmt"
 	"time"
+
+	"plugplay.com/notification/priority"
 )
 
 type INotification interface {
-	GetContent() any
+	GetContent() priority.NotificationPriority
 }
 
 type NotificationDecorator struct {
-	Message string
+	Notification priority.NotificationPriority // ← VIOLATES SRP
 }
 
-func (d *NotificationDecorator) GetContent() any {
-	return d.Message
+func (d *NotificationDecorator) GetContent() priority.NotificationPriority {
+	return d.Notification
 }
 
 type SimpleNotification struct {
 	Notification INotification
 }
 
-func (s *SimpleNotification) GetContent() any {
-	return fmt.Sprintf("%v", s.Notification.GetContent())
+func (s *SimpleNotification) GetContent() priority.NotificationPriority {
+	content := s.Notification.GetContent()
+	return content
 }
 
 type UrgentNotificationWithTimestamp struct {
 	Notification INotification
 }
 
-func (u *UrgentNotificationWithTimestamp) GetContent() any {
-	return fmt.Sprintf("%v %v", u.Notification.GetContent(), time.Now().Format("02-01-2006 15:04:05"))
+func (u *UrgentNotificationWithTimestamp) GetContent() priority.NotificationPriority {
+	content := u.Notification.GetContent()
+	content.Timestamp = int(time.Now().Unix())
+	return content
 }

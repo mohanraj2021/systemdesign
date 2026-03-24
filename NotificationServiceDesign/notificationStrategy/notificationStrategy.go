@@ -6,6 +6,24 @@ type NotificationStrategy interface {
 	SendNotification(notification string) error
 }
 
+// This interface is properly defined - it establishes a contract for notification strategies
+// However, it could benefit from additional methods like Validate() or GetType() for better extensibility
+
+type NotStrategy struct {
+	Strategy []NotificationStrategy
+}
+
+func (ns *NotStrategy) SendNotification(notification string) error {
+
+	for _, strategy := range ns.Strategy {
+		err := strategy.SendNotification(notification)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 type EmailNotification struct {
 	EmailAddress string
 }
@@ -48,6 +66,6 @@ func (n NotificationStrategyList) SendNotification(notification string) error {
 	return nil
 }
 
-func NewNotificationstrategyList(strategies ...NotificationStrategy) NotificationStrategyList {
-	return NotificationStrategyList(strategies)
+func NewNotificationstrategyList(strategies NotificationStrategy) NotificationStrategyList {
+	return NotificationStrategyList{strategies}
 }

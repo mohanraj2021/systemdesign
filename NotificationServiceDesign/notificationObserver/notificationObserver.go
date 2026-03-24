@@ -25,9 +25,9 @@ type Dispatcher struct {
 	strategies notificationstrategy.NotificationStrategyList
 }
 
-func NewNotificationDispatcher(strategies ...notificationstrategy.NotificationStrategy) *Dispatcher {
+func NewNotificationDispatcher(strategies *notificationstrategy.NotStrategy) *Dispatcher {
 	return &Dispatcher{
-		strategies: notificationstrategy.NewNotificationstrategyList(strategies...),
+		strategies: notificationstrategy.NewNotificationstrategyList(strategies),
 	}
 }
 
